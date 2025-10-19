@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+:root {
+  --brand: #003478;
+  --brand-600: #0044a0;
+  --brand-50: #e6eefb;
+
+  --ink: #0a0a0a;
+  --ink-2: #475569;
+  --border: #e5e7eb;
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --danger: #d80f13;
+
+  --radius-card: 12px;
+  --radius-pill: 9999px;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans";
+}
+
+/* Global defaults */
+html, body, #root { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+/* Container widths for desktop centering */
+.container-xl { max-width: 1200px; margin-inline: auto; }  
+.container-lg { max-width: 1040px; margin-inline: auto; }
+
+.shadow-card { box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 20px rgba(0,0,0,.04); }
+.shadow-hover:hover { box-shadow: 0 6px 24px rgba(0,0,0,.12); }
+
+.aspect-banner { aspect-ratio: 16 / 6; object-fit: cover; }
+.aspect-card   { aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; }
+
+/* Divider line */
+.hr { height: 1px; background: var(--border); }
+
+.blue-bar {
+  background: var(--brand);
+  color: #fff;
+}
+
+.card {
+  border-radius: var(--radius-card);
+  background: var(--bg);
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  border: 1px solid var(--border);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .5rem 1rem; 
+  border-radius: .5rem;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--brand-600); }
+.btn-primary:focus { outline: 2px solid transparent; box-shadow: 0 0 0 2px var(--brand-600); }
+
+.btn-outline {
+  border: 1px solid var(--brand);
+  color: var(--brand);
+  background: transparent;
+}
+.btn-outline:hover { background: var(--brand-50); }
