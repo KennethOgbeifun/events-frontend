@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams, createSearchParams } from "react-router-dom";
 import { useAuth } from "../auth/authcontext.jsx";
-import api from "../api/client.js";
 import TopBar from "./top-bar.jsx";
 
 export default function Nav() {
@@ -101,15 +100,6 @@ export default function Nav() {
   const [queryText, setQueryText] = useState(q);
   useEffect(() => setQueryText(q), [q]);
 
-  async function connectGoogle() {
-    try {
-      const { data } = await api.get("/api/integrations/google/init");
-      window.location.href = data.authUrl;
-    } catch {
-      alert("Failed to start Google auth");
-    }
-  }
-
   return (
     <header>
       <TopBar />
@@ -139,8 +129,7 @@ export default function Nav() {
           <div className="ml-auto flex items-center gap-3">
             {user ? (
               <>
-                <Link to="/me/events" className="btn btn-outline hidden sm:inline-flex">My events</Link>
-                <button onClick={connectGoogle} className="btn btn-outline hidden sm:inline-flex">Google Calendar</button>
+                <Link to="/me/events" className="btn btn-primary btn-small whitespace-nowrap">My events</Link>
                 <span className="hidden sm:inline text-[var(--ink-2)]">{user.email}</span>
                 <button onClick={() => { logout(); nav("/"); }} className="btn btn-primary">Logout</button>
               </>

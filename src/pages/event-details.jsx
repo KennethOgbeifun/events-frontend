@@ -54,20 +54,67 @@ export default function EventDetail() {
     if (!user) return nav(`/login?next=${encodeURIComponent(`/events/${id}`)}`);
     setBusy(true);
     setErr("");
+    const prev = signedUp;
+    setSignedUp(true);
+    
     try {
-      const { data } = await api.post(
-        `/api/events/${id}/signups`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } } // <-- include token
-      );
+    await api.post(
+      `/api/events/${id}/signups`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+  } catch (e) {
+    const status = e.response?.status;
+    const msg = e.response?.data?.msg || e.message || "Signup failed";
+
+    if (status === 409) {
       setSignedUp(true);
-      if (data.calendar?.htmlLink) {
-        window.open(data.calendar.htmlLink, "_blank");
+    } else {
+      // failure – roll back optimistic state
+      setSignedUp(prev);
+      setErr(msg);
+      alert(msg);
+    }
+  } finally {
+    setBusy(false);
+  }
+  }
+
+  async function onAddToCalendar() {
+    if (!user) return nav(`/login?next=${encodeURIComponent(`/events/${id}`)}`);
+
+    try {
+      // 1) Ask backend if google is connected
+      const status = await api.get("/api/integrations/google/status", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (status.data?.connected) {
+        // 2) Already connected → create the calendar event
+        const { data } = await api.post(
+          `/api/events/${id}/calendar`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (data.calendar?.htmlLink) {
+          window.open(data.calendar.htmlLink, "_blank");
+        } else {
+          alert("Added to your Google Calendar.");
+        }
+        return;
       }
+
+      // 3) Not connected → Google OAuth
+      const init = await api.get("/api/integrations/google/init", {
+        params: { eventId: id, next: `/events/${id}` },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      window.location.href = init.data.authUrl; // send user to Google
+
     } catch (e) {
-      setErr(e.response?.data?.msg || "Signup failed");
-    } finally {
-      setBusy(false);
+      const msg = e.response?.data?.msg || e.message || "Calendar action failed";
+      alert(msg);
     }
   }
 
@@ -92,24 +139,32 @@ export default function EventDetail() {
 
       <p className="text-[var(--ink)]">{event.description}</p>
 
-      {/* 👇 Swap the button based on signedUp */}
-      {signedUp ? (
-        <div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--ink-2)]"
-          title="You’re already signed up for this event"
-        >
-          <span aria-hidden>✓</span>
-          <span>Already signed up</span>
-        </div>
-      ) : (
-        <button
-          onClick={onSignUp}
-          disabled={busy}
-          className="btn btn-primary"
-        >
-          {busy ? "Signing up…" : "Sign up"}
-        </button>
-      )}
+      <div className="flex items-center gap-3">
+        {signedUp ? (
+          <div
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--ink-2)]"
+            title="You’re already signed up for this event"
+          >
+            <span aria-hidden>✓</span>
+            <span>Signed up</span>
+          </div>
+        ) : (
+          <button onClick={onSignUp} disabled={busy} className="btn btn-primary">
+            {busy ? "Signing up…" : "Sign up"}
+          </button>
+        )}
+
+        
+        {user && (
+          <button
+            onClick={onAddToCalendar}
+            className="btn btn-outline"
+            title="Add this event to your Google Calendar"
+          >
+            Add to calendar
+          </button>
+        )}
+      </div>
     </main>
   );
 }
