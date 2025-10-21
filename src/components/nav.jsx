@@ -130,7 +130,6 @@ export default function Nav() {
             {user ? (
               <>
                 <Link to="/me/events" className="btn btn-primary btn-small whitespace-nowrap">My events</Link>
-                <span className="hidden sm:inline text-[var(--ink-2)]">{user.email}</span>
                 <button onClick={() => { logout(); nav("/"); }} className="btn btn-primary">Logout</button>
               </>
             ) : (
