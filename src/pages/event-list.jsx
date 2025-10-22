@@ -49,6 +49,9 @@ export default function EventsList() {
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
             {(events || []).map((ev) => <EventCard key={ev.id} ev={ev} />)}
           </div>
+
+          <Featured title="Featured" limit={4} />
+
             
         </div>
       )}
