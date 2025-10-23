@@ -29,7 +29,7 @@ export default function Footer() {
 
       <div className="border-t border-[var(--border)]">
         <div className="container-xl px-4 py-4 text-xs text-[var(--ink-2)] flex items-center justify-between">
-          <span>© {new Date().getFullYear()} ticketclone</span>
+          <span>© {new Date().getFullYear()} EventMaster</span>
           <div className="flex items-center gap-4">
             <a className="hover:underline" href="#">Privacy</a>
             <a className="hover:underline" href="#">Terms</a>

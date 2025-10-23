@@ -1,13 +1,33 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/authcontext.jsx";
 
 export default function TopBar() {
   const { user } = useAuth();
+  const location = useLocation();
+
+  const match = location.pathname.match(/^\/events\/(\d+)(?:\/.*)?$/);
+  const currentEventId = match ? match[1] : null;
+
   return (
     <div className="border-b border-[var(--border)] text-xs text-[var(--ink-2)]">
       <div className="container-xl px-4 h-9 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span>🇬🇧 UK</span>
+          {user?.is_staff && (
+            <>
+              <Link to="/admin/events/new" className="hover:underline">
+                Create event
+              </Link>
+              {currentEventId && (
+                <Link
+                  to={`/admin/events/${currentEventId}/edit`}
+                  className="hover:underline"
+                >
+                  Edit event
+                </Link>
+              )}
+            </>
+          )}
         </div>
         <div className="flex items-center gap-4">
           {user && (

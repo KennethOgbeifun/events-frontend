@@ -79,3 +79,16 @@ body {
   background: transparent;
 }
 .btn-outline:hover { background: var(--brand-50); }
+
+.input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--ink);
+  outline: none;
+}
+.input:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand) 20%, transparent);
+}

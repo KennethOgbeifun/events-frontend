@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/client.js";
+import { useAuth } from "../auth/authcontext.jsx";
 
 export default function NewEvent() {
   const nav = useNavigate();
+  const { user, token } = useAuth();
+
+
   const [form, setForm] = useState({
     title: "", description: "", location: "",
     start_time: "", end_time: "",
@@ -24,7 +28,9 @@ export default function NewEvent() {
         price_pence: form.price_type === "FIXED" && form.price_pence !== ""
           ? Number(form.price_pence) : null
       };
-      const { data } = await api.post("/api/events", payload);
+      const { data } = await api.post("/api/events", payload, {
+        headers: { Authorization: `Bearer ${token}` }, 
+      });
       nav(`/events/${data.event.id}`);
     } catch (e) {
       setErr(e.response?.data?.msg || "Create failed");
