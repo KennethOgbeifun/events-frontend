@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/client.js";
 import { useAuth } from "../auth/authcontext.jsx";
+import LoadingBox from "../components/loading.jsx";
 
 export default function EventDetail() {
   const { id } = useParams();
@@ -119,7 +120,6 @@ export default function EventDetail() {
   }
 
   if (err) return <p style={{ padding: 16, color: "crimson" }}>{err}</p>;
-  if (loading || !event) return <p style={{ padding: 16 }}>Loading…</p>;
 
   return (
     <main className="container-xl px-4 py-8 space-y-4">
@@ -165,6 +165,7 @@ export default function EventDetail() {
           </button>
         )}
       </div>
+      <LoadingBox active={loading} label="Loading event…" />
     </main>
   );
 }
