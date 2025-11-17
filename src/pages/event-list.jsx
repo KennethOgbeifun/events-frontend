@@ -46,9 +46,6 @@ export default function EventsList() {
   }, [filters]);
 
 
-  if (loading) return <p style={{padding:16}}>Loading…</p>;
-  if (err) return <p style={{padding:16, color:"crimson"}}>{err}</p>;
-
   return (
   <>
     <Hero />
