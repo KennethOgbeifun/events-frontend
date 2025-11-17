@@ -13,22 +13,50 @@ export default function Nav() {
   const q = sp.get("q") || "";
   const locationParam = sp.get("location") || "";
 
-  function commitParams(patch = {}) {
-    const next = Object.fromEntries(sp.entries());
-    Object.assign(next, patch);
+  function commitParams(patch = {}, { replace = false } = {}) {
+  // current params from URL
+  const current = Object.fromEntries(sp.entries());
 
-    for (const k of Object.keys(next)) if (next[k] === "" || next[k] == null) delete next[k];
-    
-    if ("q" in patch || "location" in patch || "category" in patch) next.page = 1;
+  // merge patch over current
+  const next = { ...current, ...patch };
 
-    if (loc.pathname !== "/") {
-      nav({
-        pathname: "/",
-        search: `?${createSearchParams(next).toString()}`,
-      });
+  // normalize, trim and remove empty keys
+  for (const [k, v] of Object.entries(next)) {
+    let val = v;
+    if (typeof val === "string") val = val.trim();
+    if (val === "" || val == null) {
+      delete next[k];
     } else {
-      setSp(next);
+      next[k] = val;
     }
+  }
+
+  const toDate = (x) => {
+    const d = new Date(x);
+    return isNaN(d) ? null : d;
+  };
+  if (next.start && !toDate(next.start)) delete next.start;
+  if (next.end && !toDate(next.end)) delete next.end;
+  if (next.start && next.end) {
+    const s = toDate(next.start), e = toDate(next.end);
+    if (!s || !e || s > e) delete next.end; 
+  }
+
+  // reset page only if one of these actually changed value
+  const resetKeys = ["q", "location", "category", "start", "end"];
+  const changed = resetKeys.some((k) => k in patch && String(patch[k] ?? "") !== String(current[k] ?? ""));
+  if (changed) next.page = 1;
+
+  // makeing sure page is a string for URL
+  if ("page" in next) next.page = String(next.page);
+
+  const search = `?${createSearchParams(next).toString()}`;
+
+  if (loc.pathname !== "/") {
+    nav({ pathname: "/", search }, { replace });
+  } else {
+    setSp(next, { replace });
+  }
   }
 
   function setCategory(cat) {
@@ -171,7 +199,9 @@ export default function Nav() {
               <div className="bg-white text-[var(--ink)] rounded-lg px-4 py-2">
                 <div className="text-[10px] uppercase text-[var(--ink-2)]">Location</div>
                 <div className="relative">
+                  <label htmlFor="search-location" className="sr-only">Search by city</label>
                   <input
+                    id="search-location"
                     className="w-full pr-7 outline-none text-[var(--ink)] placeholder-[var(--ink-2)]"
                     placeholder="Type a city (e.g., London)"
                     value={locQuery}
@@ -225,7 +255,9 @@ export default function Nav() {
             </div>
 
             <div className="bg-white rounded-lg px-4 py-2 flex items-center gap-2">
+              <label htmlFor="search-query" className="sr-only">Search by keyword</label>
               <input
+                id="search-query"
                 value={queryText}
                 onChange={(e) => setQueryText(e.target.value)}
                 onKeyDown={(e) => {

@@ -11,6 +11,12 @@ export default function EventsList() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
+
+  function compactParams(obj) {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, v]) => v !== "" && v != null)
+  );
+  }
   // get filters from URL
   const filters = useMemo(() => {
     const f = Object.fromEntries(searchParams.entries());
@@ -26,8 +32,13 @@ export default function EventsList() {
 
   // fetch when filters change
   useEffect(() => {
-    setLoading(true); setErr("");
-    api.get("/api/events", { params: { ...filters, include: "counts" } })
+    setLoading(true);
+    setErr("");
+
+    const raw = { ...filters, include: "counts" };
+    const params = compactParams(raw);
+
+    api.get("/api/events", { params})
       .then(({ data }) => setEvents(Array.isArray(data.events) ? data.events : []))
       .catch(e => setErr(e.response?.data?.msg || "Failed to load events"))
       .finally(() => setLoading(false));
