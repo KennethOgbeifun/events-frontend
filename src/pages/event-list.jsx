@@ -4,6 +4,7 @@ import api from "../api/client.js";
 import Hero from "../components/hero.jsx";
 import EventCard from "../components/event-card.jsx";
 import Featured from "../components/featured.jsx";
+import LoadingBox from "../components/loading.jsx";
 
 export default function EventsList() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -70,6 +71,8 @@ export default function EventsList() {
       {!loading && !err && (events || []).length === 0 && (
         <div className="text-[var(--ink-2)]">No events yet.</div>
       )}
+
+      <LoadingBox active={loading} label="Loading events…" />
     </main>
   </>
 );

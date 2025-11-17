@@ -104,3 +104,29 @@ body {
   white-space: nowrap !important;
   border: 0 !important;
 }
+
+.loading-box{
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-box.active {
+  display: flex;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 6px solid var(--ink-3, #ddd);
+  border-top-color: var(--brand, #333);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
