@@ -15,6 +15,10 @@ export default function TopBar() {
           <span>🇬🇧 UK</span>
           {user?.is_staff && (
             <>
+              <Link to="/admin" className="hover:underline">
+                Admin dashboard
+              </Link>
+
               <Link to="/admin/events/new" className="hover:underline">
                 Create event
               </Link>

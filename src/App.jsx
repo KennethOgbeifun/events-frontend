@@ -12,6 +12,7 @@ import Footer from "./components/footer.jsx";
 import HelpPage from "./pages/help.jsx";
 import ContactPage from "./pages/contact.jsx";
 import MyEvents from "./pages/my-events.jsx";
+import AdminDashboard from "./pages/admin.jsx";
 
 function StaffRoute({ children }) {
   const { user } = useAuth();
@@ -41,6 +42,7 @@ export default function App() {
         } />
         <Route path="/help" element={<HelpPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/admin" element={<StaffRoute><AdminDashboard /></StaffRoute>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

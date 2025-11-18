@@ -123,48 +123,63 @@ export default function EventDetail() {
 
   return (
     <main className="container-xl px-4 py-8 space-y-4">
-      <h1 className="text-2xl font-bold text-[var(--ink)]">{event.title}</h1>
+      {err && <p style={{ padding: 16, color: "crimson" }}>{err}</p>}
 
-      <div className="flex flex-wrap gap-2 text-sm text-[var(--ink-2)]">
-        <span className="rounded-[var(--radius-pill)] bg-[var(--surface)] px-3 py-1">
-          {new Date(event.start_time).toLocaleString()} — {new Date(event.end_time).toLocaleString()}
-        </span>
-        <span className="rounded-[var(--radius-pill)] bg-[var(--surface)] px-3 py-1">
-          {event.location}
-        </span>
-        <span className="rounded-[var(--radius-pill)] bg-[var(--brand-50)] text-[var(--brand)] px-3 py-1">
-          {event.price_type}
-        </span>
-      </div>
+      {!loading && event && (
+        <>
+          <h1 className="text-2xl font-bold text-[var(--ink)]">{event.title}</h1>
+          <img
+            className="w-full max-h-[400px] object-cover rounded-lg"
+            src={
+              event.image_url ||
+              `https://picsum.photos/seed/${encodeURIComponent(String(event.id))}-${encodeURIComponent(event.title || "event")}/1200/600`
+            }
+            alt={`Image for ${event.title}`}
+          />
 
-      <p className="text-[var(--ink)]">{event.description}</p>
-
-      <div className="flex items-center gap-3">
-        {signedUp ? (
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--ink-2)]"
-            title="You’re already signed up for this event"
-          >
-            <span aria-hidden>✓</span>
-            <span>Signed up</span>
+          <div className="flex flex-wrap gap-2 text-sm text-[var(--ink-2)]">
+            <span className="rounded-[var(--radius-pill)] bg-[var(--surface)] px-3 py-1">
+              {new Date(event.start_time).toLocaleString()} — {new Date(event.end_time).toLocaleString()}
+            </span>
+            <span className="rounded-[var(--radius-pill)] bg-[var(--surface)] px-3 py-1">
+              {event.location}
+            </span>
+            <span className="rounded-[var(--radius-pill)] bg-[var(--brand-50)] text-[var(--brand)] px-3 py-1">
+              {event.price_type}
+            </span>
           </div>
-        ) : (
-          <button onClick={onSignUp} disabled={busy} className="btn btn-primary">
-            {busy ? "Signing up…" : "Sign up"}
-          </button>
-        )}
 
-        
-        {user && (
-          <button
-            onClick={onAddToCalendar}
-            className="btn btn-outline"
-            title="Add this event to your Google Calendar"
-          >
-            Add to calendar
-          </button>
-        )}
-      </div>
+          <p className="text-[var(--ink)]">{event.description}</p>
+
+          <div className="flex items-center gap-3">
+            {signedUp ? (
+              <div
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--ink-2)]"
+                title="You’re already signed up for this event"
+              >
+                <span aria-hidden>✓</span>
+                <span>Signed up</span>
+              </div>
+            ) : (
+              <button onClick={onSignUp} disabled={busy} className="btn btn-primary">
+                {busy ? "Signing up…" : "Sign up"}
+              </button>
+            )}
+
+            
+            {user && (
+              <button
+                onClick={onAddToCalendar}
+                className="btn btn-outline"
+                title="Add this event to your Google Calendar"
+              >
+                Add to calendar
+              </button>
+            )}
+          </div>
+        </>
+      )}
+      
       <LoadingBox active={loading} label="Loading event…" />
     </main>
   );
