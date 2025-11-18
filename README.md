@@ -1,52 +1,108 @@
-Vite React frontend that connects to the events backend API for browsing community events, searching & filtering, signing up, and adding events to your Google Calendar.
+Events Platform – Frontend (Vite + React)
 
-Browse events on the home page with filtering.
-Categories (Music, Sport, Arts, Family, Cities)
-Location (type to get city suggestions)
-Keyword search (artist / event / venue)
-View event details on a separate page.
-Sign up for events (requires login). Shows “Signed up” when done and prevents duplicate signups.
-My Events page lists everything you’ve signed up for.
-Add to Google Calendar from an event page:
-If not connected, you’ll be taken through Google OAuth and returned.
-If connected, the event is created in your Google Calendar.
+A responsive React frontend built with Vite, designed to connect to the Events API backend.
+The application allows users to browse community events, apply detailed filters, sign up for events, manage their own events list, and (optionally) add events to Google Calendar.
 
-Staff-only tools (visible when your JWT says is_staff: true):
-Create new events
-Edit existing events (link appear in the top bar when viewing an event)
+Staff users have access to admin tools for creating and managing events.
+
+
+Features
+
+Event Browsing & Search
+Browse all upcoming events on the homepage.
+Dynamic filtering:
+Categories (Music, Sport, Arts, Family, City Events)
+Location search with live city suggestions
+Keyword search (artist, venue, event name)
+Loading states and graceful error handling
+
+
+Event Details Page
+
+Each event has its own dedicated page showing:
+Title, description, date/time range
+Location
+Price type (free / paid)
+Placeholder image (picseed) or a real image if provided
+Sign-up button (requires login)
+“Signed up” state with duplicate protection
+
+
+Authentication
+
+Login and Register pages
+Access tokens stored securely in memory/localStorage
+Protected routes using React Router
+Auto-logout on expired or invalid token
+
+
+My Events
+
+/me/events
+Displays all events the logged-in user has signed up for
+Uses the /signups/me endpoint
+
+
+Google Calendar Integration
+
+From any event page:
+If Google calendar is not connected, users are redirected to the Google OAuth consent screen.
+If connected to calendar already, the event is added directly to their Google Calendar.
+
+
+Staff-Only Admin Tools
+
+Visible only when the logged-in user’s JWT contains is_staff: true.
+Admin features include:
+Create new event (/admin/events/new)
+Edit existing event (/admin/events/:id/edit)
+Quick links added to the top bar:
+"Create event"
+"Edit event" (only shown when viewing a specific event)
+
+
+Tech Stack
+
+React 18
+
+Vite
+
+React Router
+
+Axios API client
+
+Tailwind-style utility classes (custom theme)
+
+Google OAuth (through backend integration)
 
 Prerequisites
-Node 18+
-npm 9+
 
-1. Install: npm i
+Node.js ≥ 18
 
-2. Environment: create .env.development
-example:
-VITE_API=http://localhost:4000
+npm ≥ 9
 
-3. Run: npm run dev
+Local Development Setup
+1. Install dependencies - npm install
 
-4. Production:
-Add folder (public)in the root of frontend repo and file (_redirects)in the folder public/_redirects.
-inside the file write /*  /index.html  200
+2. Create your environment file - VITE_API=http://localhost:4000
+The frontend uses VITE_API as the base URL for all backend requests.
 
-connect repo to netify 
-build = npm run build
-publish = dist
-Environment variable in Netlify:
-VITE_API = https://<your-api>.onrender.com (hosted backend)
-Ensure backend CORS env matches your Netlify origin:
-FRONTEND_BASE_URL = https://<your-site>.netlify.app
+3. Start the dev server - npm run dev
 
-Routing:
-/ – Events list (with filters)
-/events/:id – Event details (Sign up, Add to calendar)
-/login, /register – Auth pages
-/me/events – My events (requires login)
-/admin/events/new – Create event (requires staff)
-/admin/events/:id/edit – Edit event (requires staff)
-/help and /contact – faqs and placeholder info
-/integrations/google/success – Return path after Google OAuth
+Frontend runs at: http://localhost:5173
 
+Routing Guide
 
+| Route                          | Description                       |
+| ------------------------------ | --------------------------------- |
+| `/`                            | Event list + filters              |
+| `/events/:id`                  | Event details (sign up, calendar) |
+| `/login`                       | Login                             |
+| `/register`                    | Register                          |
+| `/me/events`                   | User’s signed-up events           |
+| `/admin/events/new`            | Create an event (staff only)      |
+| `/admin/events/:id/edit`       | Edit an event (staff only)        |
+| `/admin`                       | Admin dashboard overview          |
+| `/help`                        | FAQ & help                        |
+| `/contact`                     | Contact information               |
+| `/integrations/google/success` | Google OAuth redirect handler     |
