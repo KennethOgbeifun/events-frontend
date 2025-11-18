@@ -6,7 +6,7 @@ import LoadingBox from "../components/loading.jsx";
 
 export default function EventDetail() {
   const { id } = useParams();
-  const { user, token } = useAuth();          // <-- get token here
+  const { user, token, logout } = useAuth();          // <-- get token here
   const nav = useNavigate();
 
   const [event, setEvent] = useState(null);
@@ -43,6 +43,7 @@ export default function EventDetail() {
             const status = e.response?.status;
             if (!cancel) {
               if (status === 401) {
+                logout();
                 setSignedUp(false);
               } else {
                 console.error("Failed to load my signups", e);
