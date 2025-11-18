@@ -137,7 +137,9 @@ export default function EventDetail() {
   if (err) return <p style={{ padding: 16, color: "crimson" }}>{err}</p>;
 
   return (
-    <main className="container-xl px-4 py-8 space-y-4">
+    <main className="container-xl px-4 py-8 space-y-4 relative">
+      <LoadingBox active={loading} label="Loading event…" />
+      
       {err && <p style={{ padding: 16, color: "crimson" }}>{err}</p>}
 
       {!loading && event && (
@@ -195,7 +197,6 @@ export default function EventDetail() {
         </>
       )}
       
-      <LoadingBox active={loading} label="Loading event…" />
     </main>
   );
 }
