@@ -106,13 +106,13 @@ body {
 }
 
 .loading-box{
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(255, 255, 255, 0.8);
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 20;
 }
 
 .loading-box.active {

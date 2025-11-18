@@ -49,9 +49,10 @@ export default function EventsList() {
   return (
   <>
     <Hero />
-    <main className="container-xl px-4 py-6">
+    <main className="container-xl px-4 py-6 relative">
+      <LoadingBox active={loading} label="Loading events…" />
+
       {err && <p className="mb-4 text-[var(--danger)]">{err}</p>}
-      {loading && <p className="text-[var(--ink-2)]">Loading…</p>}
 
       {!loading && !err && (
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
@@ -69,7 +70,6 @@ export default function EventsList() {
         <div className="text-[var(--ink-2)]">No events yet.</div>
       )}
 
-      <LoadingBox active={loading} label="Loading events…" />
     </main>
   </>
 );
