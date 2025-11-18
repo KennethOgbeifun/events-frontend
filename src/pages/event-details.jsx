@@ -44,8 +44,6 @@ export default function EventDetail() {
             if (!cancel) {
               if (status === 401) {
                 setSignedUp(false);
-                // Optional: you could also force logout here
-                // logout();
               } else {
                 console.error("Failed to load my signups", e);
               }
