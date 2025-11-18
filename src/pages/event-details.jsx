@@ -22,6 +22,7 @@ export default function EventDetail() {
     async function load() {
       setLoading(true);
       setErr("");
+
       try {
         // 1) event details
         const ev = await api.get(`/api/events/${id}`);
@@ -29,12 +30,26 @@ export default function EventDetail() {
 
         // 2) am I signed up? (only if logged in)
         if (token) {
-          const mine = await api.get("/api/signups/me", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (!cancel) {
-            const ids = (mine.data?.event_ids || []).map(String);
-            setSignedUp(ids.includes(String(id)));
+          try {
+            const mine = await api.get("/api/signups/me", {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!cancel) {
+              const ids = (mine.data?.event_ids || []).map(String);
+              setSignedUp(ids.includes(String(id)));
+            }
+          } catch (e) {
+            // If the token is bad/expired, just act as "not signed up"
+            const status = e.response?.status;
+            if (!cancel) {
+              if (status === 401) {
+                setSignedUp(false);
+                // Optional: you could also force logout here
+                // logout();
+              } else {
+                console.error("Failed to load my signups", e);
+              }
+            }
           }
         } else {
           if (!cancel) setSignedUp(false);
@@ -45,6 +60,7 @@ export default function EventDetail() {
         if (!cancel) setLoading(false);
       }
     }
+
 
     load();
     return () => { cancel = true; };
